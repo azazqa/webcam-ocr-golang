@@ -148,6 +148,13 @@ func (c *Camera) Current() Format {
 	return c.format
 }
 
+// Capturing reports whether Start has been called and capture is active.
+func (c *Camera) Capturing() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.cap != nil
+}
+
 // Start begins capturing in the given format.
 func (c *Camera) Start(f Format) error {
 	c.mu.Lock()
@@ -168,6 +175,22 @@ func (c *Camera) Start(f Format) error {
 		c.format = f
 		return nil
 	})
+}
+
+// EnsureStart starts capture if needed. If already capturing the same format, it is a no-op.
+// A different format while capturing requires Close/Open (GUI handles that).
+func (c *Camera) EnsureStart(f Format) error {
+	c.mu.Lock()
+	if c.cap != nil {
+		same := c.format.SameFormat(f)
+		c.mu.Unlock()
+		if same {
+			return nil
+		}
+		return errors.New("capture already started with a different format (reopen camera)")
+	}
+	c.mu.Unlock()
+	return c.Start(f)
 }
 
 // Grab reads one frame and converts it to an image.

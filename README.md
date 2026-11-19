@@ -29,8 +29,11 @@ USB 웹캠으로 모니터 문서 화면 전환을 감지해 PNG를 저장하고
 go version   # go1.27.4
 ./build.sh test
 ./build.sh race
-./build.sh          # windows/amd64 패키지 스모크
+./build.sh          # → dist/webcam-ocr.exe (작업 A GUI)
+./build.sh deploy /mnt/c/Users/<이름>/Desktop/webcam-ocr
 ```
+
+Windows에서는 `dist`를 NTFS 경로로 복사한 뒤 `webcam-ocr.exe`를 실행하세요 (`/mnt/c/...` 또는 `\\wsl$` 직접 실행은 비권장).
 
 ## Windows 실기 체크리스트 (GUI 연동 후)
 

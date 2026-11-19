@@ -30,6 +30,11 @@ func (f Format) String() string {
 	return fmt.Sprintf("%dx%d %s %.0ffps", f.Width, f.Height, f.Pixel, f.FPS)
 }
 
+// SameFormat reports whether two formats describe the same capture mode.
+func (f Format) SameFormat(o Format) bool {
+	return f.Width == o.Width && f.Height == o.Height && f.Pixel == o.Pixel && f.FPS == o.FPS
+}
+
 // BestFormat picks the format best suited for OCR: highest resolution first,
 // then MJPG at the same resolution (higher fps, less USB bandwidth), then higher fps.
 func BestFormat(fs []Format) (Format, bool) {
